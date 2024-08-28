@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import Target from "./Target";
 import MainImage from "./MainImage";
 
-const ClickMenu = ({ options, image }) => {
+const ClickMenu = ({ options, image, onSearchComplete }) => {
+  const [characters, setCharacters] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const targetDimensions = useRef({
@@ -16,11 +17,6 @@ const ClickMenu = ({ options, image }) => {
   const menuRef = useRef(null);
   const openMenuRef = useRef(false);
   const imageDimensions = useRef({ width: 0, height: 0 });
-  const characters = useRef(
-    options.map((option) => {
-      return { ...option, found: false };
-    })
-  );
 
   const handleImageDimensionsChange = (dimensions) => {
     imageDimensions.current = dimensions;
@@ -50,12 +46,14 @@ const ClickMenu = ({ options, image }) => {
     document.addEventListener("scroll", handleScroll);
     document.addEventListener("click", handleClickOutside);
     window.addEventListener("resize", handleWindowResize);
+
+    setCharacters([...options]);
     return () => {
       document.removeEventListener("click", handleClickOutside);
       document.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, []);
+  }, [options]);
 
   const handleClick = (event) => {
     event.preventDefault();
@@ -79,7 +77,10 @@ const ClickMenu = ({ options, image }) => {
       coordinates.bottom > (option.yPercent / 100) * height - window.scrollY;
     if (!option.found) option.found = correct;
     const allFound = characters.every((obj) => obj.found);
-    if (allFound) alert("You found all the characters!");
+    if (allFound) {
+      alert("You found all the characters!");
+      onSearchComplete();
+    }
     setIsVisible(false);
   };
 
@@ -102,12 +103,12 @@ const ClickMenu = ({ options, image }) => {
           }}
         >
           <Target onDimensionChange={handleDimensions} />
-          {characters.current.map((option, index) => (
+          {characters.map((option, index) => (
             <div
               key={index}
               onClick={(e) => {
                 e.stopPropagation();
-                handleOptionClick(option, characters.current);
+                handleOptionClick(option, characters);
               }}
               style={{
                 cursor: "pointer",
