@@ -27,3 +27,12 @@ model Timer {
   startTime   DateTime
   elapsedTime Int
 }
+
+model Leaderboard {
+  id        Int      @id @default(autoincrement())
+  username  String
+  score     Int
+  createdAt DateTime @default(now())
+
+  @@index([score])
+}

@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 const Timer = ({ completeFlag, onGameEnd }) => {
   const [timerData, setTimerData] = useState(null);
 
   const startTimer = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/game/start-game",
-        {
-          withCredentials: true,
-        }
+        "http://localhost:3000/game/start-game"
       );
       setTimerData(response.data);
     } catch (error) {
@@ -20,8 +19,9 @@ const Timer = ({ completeFlag, onGameEnd }) => {
 
   useEffect(() => {
     if (!timerData) {
-      startTimer;
+      startTimer();
     }
+
     const interval = setInterval(async () => {
       if (timerData) {
         try {
@@ -45,10 +45,7 @@ const Timer = ({ completeFlag, onGameEnd }) => {
     const completeGame = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3000/game/complete-game",
-          {
-            withCredentials: true,
-          }
+          "http://localhost:3000/game/complete-game"
         );
         onGameEnd(response.data.clearTime); // Pass the final time to the parent component
       } catch (error) {

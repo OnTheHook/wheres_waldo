@@ -4,6 +4,8 @@ import ContextMenu from "./ContextMenu";
 import axios from "axios";
 import Timer from "./Timer";
 
+axios.defaults.withCredentials = true;
+
 const ImageSearch = () => {
   const [options, setOptions] = useState([]);
   const [searchComplete, setSearchComplete] = useState(false);
@@ -19,9 +21,7 @@ const ImageSearch = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/locations", {
-          withCredentials: true,
-        });
+        const response = await axios.get("http://localhost:3000/locations");
         console.log(response);
         setOptions(response.data.characters);
       } catch (error) {
