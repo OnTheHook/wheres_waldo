@@ -78,7 +78,6 @@ const ClickMenu = ({ options, image, onSearchComplete }) => {
     if (!option.found) option.found = correct;
     const allFound = characters.every((obj) => obj.found);
     if (allFound) {
-      alert("You found all the characters!");
       onSearchComplete();
     }
     setIsVisible(false);

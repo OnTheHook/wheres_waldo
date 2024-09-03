@@ -9,7 +9,9 @@ const Timer = ({ completeFlag, onGameEnd }) => {
   const startTimer = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/game/start-game"
+        "http://localhost:3000/game/start-game",
+        {}, // empty object as second argument for consistency
+        { withCredentials: true } // explicitly set withCredentials
       );
       setTimerData(response.data);
     } catch (error) {
@@ -27,9 +29,7 @@ const Timer = ({ completeFlag, onGameEnd }) => {
         try {
           const response = await axios.get(
             "http://localhost:3000/timer/elapsed-time",
-            {
-              withCredentials: true,
-            }
+            { withCredentials: true }
           );
           setTimerData(response.data);
         } catch (error) {
@@ -45,7 +45,9 @@ const Timer = ({ completeFlag, onGameEnd }) => {
     const completeGame = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3000/game/complete-game"
+          "http://localhost:3000/game/complete-game",
+          {}, // empty object as second argument for consistency
+          { withCredentials: true } // explicitly set withCredentials
         );
         onGameEnd(response.data.clearTime); // Pass the final time to the parent component
       } catch (error) {
@@ -55,7 +57,7 @@ const Timer = ({ completeFlag, onGameEnd }) => {
     if (completeFlag) {
       completeGame();
     }
-  }, [completeFlag]);
+  }, [completeFlag, onGameEnd]); // Added onGameEnd to dependency array
 
   return (
     <div>

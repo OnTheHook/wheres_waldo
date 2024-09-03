@@ -4,12 +4,13 @@ const prisma = new PrismaClient();
 
 exports.startGame = async (req, res) => {
   let userId = req.cookies.userId;
-
+  console.log(userId);
   if (!userId) {
     userId = uuidv4(); // Generate a new UUID
     res.cookie("userId", userId, {
       maxAge: 60 * 60 * 1000,
       httpOnly: true,
+      secure: true, // Ensure your site is served over HTTPS
       sameSite: "None",
     }); // Expires in 1 hour
   }
@@ -51,7 +52,7 @@ exports.completeGame = async (req, res) => {
     res.clearCookie("userId");
     res.json({
       message: "Game completed. User ID recycled.",
-      clearTime: timer.startTime - currentTime,
+      clearTime: currentTime - timer.startTime,
     });
   } else {
     res.status(404).json({ message: "Timer not found for user" });

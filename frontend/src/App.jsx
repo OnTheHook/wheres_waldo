@@ -1,13 +1,25 @@
-import "./App.css";
-import ImageSearch from "./components/ImageSearch";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
+import StartPage from "./pages/StartPage";
+import GamePage from "./pages/GamePage";
+import ScorePage from "./pages/ScorePage";
+import TestingCookies from "./pages/TestingCookies";
 
-function App() {
-  const options = ["Option 1", "Option 2", "Option 3"];
+const App = () => {
   return (
-    <div style={{ width: "!00%" }}>
-      <ImageSearch />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<StartPage />} />
+        <Route path="/game" element={<GamePage />} />
+        <Route path="/score" element={<ScorePage />} />
+        <Route path="/test" element={<TestingCookies />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

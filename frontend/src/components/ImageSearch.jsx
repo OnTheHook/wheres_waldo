@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import background from "../assets/hEI7v9x.jpeg";
 import ContextMenu from "./ContextMenu";
 import axios from "axios";
@@ -10,9 +11,12 @@ const ImageSearch = () => {
   const [options, setOptions] = useState([]);
   const [searchComplete, setSearchComplete] = useState(false);
   const [finalTime, setFinalTime] = useState(null);
+  const navigate = useNavigate();
 
   const handleGameEnd = (time) => {
     setFinalTime(time);
+    console.log(finalTime);
+    // navigate("/score", { state: { finalTime: finalTime } });
   };
 
   const handleSearchComplete = () => {

@@ -6,7 +6,7 @@ const gameRoutes = require("./routes/game");
 const timerRoutes = require("./routes/timer");
 const leaderboardRoutes = require("./routes/leaderboard");
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "http://127.0.0.1:5173",
   credentials: true,
 };
 
@@ -17,9 +17,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/get-cookie", (req, res) => {
-  console.log(req.cookies); // This should now log the cookies correctly
-  res.json({ message: "Check your console for logged cookies!" });
+app.post("/endpoint", (req, res) => {
+  res.cookie("myCookie", "cookieValue", {
+    httpOnly: true,
+    secure: true, // Ensure your site is served over HTTPS
+    sameSite: "None",
+  });
+  res.send("Cookie set");
 });
 
 app.use("/locations", characterLocationsRoutes);
