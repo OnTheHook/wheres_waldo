@@ -6,6 +6,7 @@ const Leaderboard = ({ time }) => {
   const [name, setName] = useState("");
   const [leaders, setLeaders] = useState([]);
   const [isTopScore, setIsTopScore] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,23 +29,37 @@ const Leaderboard = ({ time }) => {
     };
 
     getLeaderData();
-  }, [isTopScore]);
+  }, [isTopScore, isSubmitted]);
 
   useEffect(() => {
     const compareScores = () => {
       const check = leaders.some((leader) => leader.score > time);
       setIsTopScore(check);
     };
-
-    compareScores();
-  }, [leaders]);
+    if (!isSubmitted) {
+      compareScores();
+    }
+  }, [leaders, isSubmitted, time]);
   const onChange = (e) => {
     setName(e.target.value);
   };
 
   const onSubmitPress = (e) => {
-    setIsTopScore(false);
-    navigate("/");
+    e.preventDefault(); // Prevent the default form submission
+
+    axios
+      .post("http://localhost:3000/leaderboard/topscore", {
+        user: name,
+        score: time,
+      })
+      .then((response) => {
+        console.log("Score submitted:", response.data);
+        setIsTopScore(false);
+        setIsSubmitted(true);
+      })
+      .catch((error) => {
+        console.error("Error submitting score:", error);
+      });
   };
 
   const onClickPress = (e) => {
@@ -55,35 +70,30 @@ const Leaderboard = ({ time }) => {
     <div>
       <h1>Scoreboard</h1>
       <table>
-        <tr>
-          <th>Name</th>
-          <th>Seconds</th>
-        </tr>
-        {leaders.map((leader, index) => (
-          <tr key={index}>
-            <td>{leader.username}</td>
-            <td>{leader.score}</td>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Seconds</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {leaders.map((leader, index) => (
+            <tr key={index}>
+              <td>{leader.username}</td>
+              <td>{leader.score / 1000}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
-      <h1>Your time was: {time}</h1>
-      {isTopScore && (
-        <form
-          action="http://localhost:3000/leaderboard/topscore"
-          method="POST"
-          onSubmit={onSubmitPress}
-        >
-          <label htmlFor="user">Name - 3 Characters:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={onChange}
-            id="user"
-            name="user"
-          />
-          <label htmlFor="score">Time:</label>
-          <input type="number" value={time} id="score" name="score" />
-          <button type="submit"></button>
+      <h1>Your time was: {time / 1000}</h1>
+      {!isSubmitted && isTopScore && (
+        <form onSubmit={onSubmitPress}>
+          <label>
+            Name - 3 Characters:
+            <input type="text" value={name} onChange={onChange} />
+          </label>
+          <label>Time: {time / 1000}</label>
+          <button type="submit">Submit Score</button>
         </form>
       )}
       <button onClick={onClickPress}>Start Again</button>

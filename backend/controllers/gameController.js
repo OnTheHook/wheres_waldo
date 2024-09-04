@@ -49,7 +49,7 @@ exports.completeGame = async (req, res) => {
   });
 
   if (timer) {
-    res.clearCookie("userId");
+    res.clearCookie("userId", { sameSite: "None", secure: true });
     res.json({
       message: "Game completed. User ID recycled.",
       clearTime: currentTime - timer.startTime,

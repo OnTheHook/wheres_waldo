@@ -10,13 +10,13 @@ axios.defaults.withCredentials = true;
 const ImageSearch = () => {
   const [options, setOptions] = useState([]);
   const [searchComplete, setSearchComplete] = useState(false);
-  const [finalTime, setFinalTime] = useState(null);
+  const [finalTime, setFinalTime] = useState(999999);
   const navigate = useNavigate();
 
   const handleGameEnd = (time) => {
     setFinalTime(time);
-    console.log(finalTime);
-    // navigate("/score", { state: { finalTime: finalTime } });
+
+    navigate("/score", { state: { finalTime: time } });
   };
 
   const handleSearchComplete = () => {

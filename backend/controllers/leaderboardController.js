@@ -25,4 +25,6 @@ exports.insertTopScore = async (req, res) => {
       username: user,
     },
   });
+
+  res.json({ message: "Top score inserted" });
 };

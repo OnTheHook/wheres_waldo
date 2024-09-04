@@ -5,6 +5,7 @@ axios.defaults.withCredentials = true;
 
 const Timer = ({ completeFlag, onGameEnd }) => {
   const [timerData, setTimerData] = useState(null);
+  const [intervalId, setIntervalId] = useState(null);
 
   const startTimer = async () => {
     try {
@@ -38,6 +39,7 @@ const Timer = ({ completeFlag, onGameEnd }) => {
       }
     }, 1000); // Poll every second
 
+    setIntervalId(interval);
     return () => clearInterval(interval);
   }, [timerData]);
 
@@ -49,15 +51,18 @@ const Timer = ({ completeFlag, onGameEnd }) => {
           {}, // empty object as second argument for consistency
           { withCredentials: true } // explicitly set withCredentials
         );
+        console.log("Game complete");
+        console.log(response.data);
         onGameEnd(response.data.clearTime); // Pass the final time to the parent component
       } catch (error) {
         console.error("Error completing game:", error);
       }
     };
     if (completeFlag) {
+      clearInterval(intervalId);
       completeGame();
     }
-  }, [completeFlag, onGameEnd]); // Added onGameEnd to dependency array
+  }, [completeFlag]); // Added onGameEnd to dependency array
 
   return (
     <div>
