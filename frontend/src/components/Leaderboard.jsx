@@ -89,8 +89,8 @@ const Leaderboard = ({ time }) => {
       {!isSubmitted && isTopScore && (
         <form onSubmit={onSubmitPress}>
           <label>
-            Name - 3 Characters:
-            <input type="text" value={name} onChange={onChange} />
+            Name - 5 Characters:
+            <input type="text" value={name} onChange={onChange} maxLength={5} />
           </label>
           <label>Time: {time / 1000}</label>
           <button type="submit">Submit Score</button>

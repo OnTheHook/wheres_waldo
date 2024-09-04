@@ -6,6 +6,7 @@ axios.defaults.withCredentials = true;
 const Timer = ({ completeFlag, onGameEnd }) => {
   const [timerData, setTimerData] = useState(null);
   const [intervalId, setIntervalId] = useState(null);
+  const [startTime, setStartTime] = useState(null);
 
   const startTimer = async () => {
     try {
@@ -15,6 +16,7 @@ const Timer = ({ completeFlag, onGameEnd }) => {
         { withCredentials: true } // explicitly set withCredentials
       );
       setTimerData(response.data);
+      setStartTime(Date.now());
     } catch (error) {
       console.error("Error starting timer:", error);
     }
@@ -25,23 +27,19 @@ const Timer = ({ completeFlag, onGameEnd }) => {
       startTimer();
     }
 
-    const interval = setInterval(async () => {
-      if (timerData) {
-        try {
-          const response = await axios.get(
-            "http://localhost:3000/timer/elapsed-time",
-            { withCredentials: true }
-          );
-          setTimerData(response.data);
-        } catch (error) {
-          console.error("Error getting elapsed time:", error);
-        }
+    const interval = setInterval(() => {
+      if (timerData && startTime) {
+        const elapsedTime = Date.now() - startTime;
+        setTimerData((prevTimerData) => ({
+          ...prevTimerData,
+          elapsedTime: Math.floor(elapsedTime / 1000), // Convert to seconds
+        }));
       }
-    }, 1000); // Poll every second
+    }, 1000);
 
     setIntervalId(interval);
     return () => clearInterval(interval);
-  }, [timerData]);
+  }, [timerData, startTime]);
 
   useEffect(() => {
     const completeGame = async () => {
@@ -73,7 +71,7 @@ const Timer = ({ completeFlag, onGameEnd }) => {
             Timer started at:{" "}
             {new Date(timerData.startTime).toLocaleTimeString()}
           </p>
-          <p>Elapsed Time: {timerData.elapsedTime} seconds</p>
+          <p>Elapsed Time: {timerData.elapsedTime || 0} seconds</p>
         </div>
       )}
     </div>
