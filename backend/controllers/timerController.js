@@ -1,7 +1,8 @@
+const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.elapsedTime = async (req, res) => {
+exports.elapsedTime = asyncHandler(async (req, res) => {
   const userId = req.cookies.userId;
 
   try {
@@ -24,4 +25,4 @@ exports.elapsedTime = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: "Timer not found for user", error });
   }
-};
+});

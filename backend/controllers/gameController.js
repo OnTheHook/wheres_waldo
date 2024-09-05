@@ -1,10 +1,11 @@
 const { v4: uuidv4 } = require("uuid");
+const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.startGame = async (req, res) => {
+exports.startGame = asyncHandler(async (req, res) => {
   let userId = req.cookies.userId;
-  console.log(userId);
+  // Check if user id exists or generate a unique id
   if (!userId) {
     userId = uuidv4(); // Generate a new UUID
     res.cookie("userId", userId, {
@@ -39,9 +40,9 @@ exports.startGame = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: "Timer did not start" });
   }
-};
+});
 
-exports.completeGame = async (req, res) => {
+exports.completeGame = asyncHandler(async (req, res) => {
   const userId = req.cookies.userId;
   const currentTime = Date.now();
   const timer = await prisma.timer.findUnique({
@@ -57,4 +58,4 @@ exports.completeGame = async (req, res) => {
   } else {
     res.status(404).json({ message: "Timer not found for user" });
   }
-};
+});

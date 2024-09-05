@@ -1,7 +1,8 @@
+const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.getTopScores = async (req, res) => {
+exports.getTopScores = asyncHandler(async (req, res) => {
   const topScores = await prisma.leaderboard.findMany({
     orderBy: {
       score: "asc",
@@ -10,9 +11,9 @@ exports.getTopScores = async (req, res) => {
   });
 
   res.json({ topScores });
-};
+});
 
-exports.insertTopScore = async (req, res) => {
+exports.insertTopScore = asyncHandler(async (req, res) => {
   const { score, user } = req.body;
 
   if (!score || !user) {
@@ -27,4 +28,4 @@ exports.insertTopScore = async (req, res) => {
   });
 
   res.json({ message: "Top score inserted" });
-};
+});

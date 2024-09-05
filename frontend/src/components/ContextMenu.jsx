@@ -53,7 +53,7 @@ const ClickMenu = ({ options, image, onSearchComplete }) => {
       document.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, [options]);
+  }, [options, isVisible]);
 
   const handleClick = (event) => {
     event.preventDefault();
